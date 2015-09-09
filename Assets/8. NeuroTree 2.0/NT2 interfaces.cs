@@ -1,0 +1,101 @@
+﻿using UnityEngine;
+using System.Collections;
+using System.Collections.Generic;
+
+namespace NeuTree2 {
+	public interface IUniNode{
+		LogicNode logicNode {get; set;}
+		ActionNode actionNode {get; set;}
+		ProcessingScope processingScope {get; set;}
+		float inputThreshold { get; set;}
+		float outputThreshold { get; set;}
+		IBlackBoard blackboard { get; set;}
+		List <IUniNode> lowerNodes { get; set;}
+		IUniNode upperNode {get; set;}
+		BaseNodeAI topNode { get; set;}
+		void InitializeNode();
+		NeuTreeCB Run(IBlackBoard _blackboard);
+	}
+}
+
+public class NeuTreeCB{
+	public float fireVal;
+	public ReplyFire replyFire;
+	public IBlackBoard blackboard;
+	public List <float> weights = new List<float> ();
+}
+
+[System.Serializable]
+public class IdWeight{
+	public int id;
+	public float weight;
+}
+
+public interface IBlackBoard{
+	int layer { get; set;}
+	Dictionary <FunctionType, Dictionary <int, float>> functionStimuls { get; set;}
+	Dictionary <FunctionType, List <IdWeight>> dataMaps { get; set;}
+	List <BaseElement> baseElements{ get; set;}
+	float[] baseElementsPriority { get; set;}
+
+	List <BaseActivityElement> activeElements{ get; set;}
+	float[] activityElementsPriority { get; set;}
+
+	Dictionary<ActionNode, float> actionsPriority { get; set;}
+
+	List <FunctionPower> functions { get; set;}
+
+	void Project(IBlackBoard other);
+	void Blend(IBlackBoard other, float share);
+	void InitializeBlackboard();
+
+	FunctionPower GetFunction (FunctionType _fType);
+
+	BaseActivityElement subject{ get; set;}
+
+	float GetElementWeight (FunctionType _ftype, int _id);
+	void SetElementWeight (FunctionType _ftype, int _id, float _weight);
+	void UpdateTable (List<int> _ids);
+}
+
+public enum LogicNode {None, AND, OR, IF, ELSE};
+public enum ActionNode {None, Attack, Wait, ChangeSubTree, BlendDecisionSpaces};
+public enum ProcessingScope {None, All, Primitives, ActiveElements};
+public enum ProcessingElements {Default, SubElements, Parent, AttackTargets, MoveTargets, SupportTargets, ExploitTargets};
+
+public enum ReplyFire {None, Success, Fail};
+
+[System.Serializable]
+public class FunctionPower{
+	public FunctionType fType;
+	public float val;
+
+	public FunctionPower(FunctionType functionType, float power){
+		fType = functionType;
+		val = power;
+	}
+
+	public void ClearVal(){
+		val = 0.0f;
+	}
+}
+
+public enum VarType {Any, IntVar, IntList, FloatVar, FloatList, IdWeightVar, IDWeightList};
+
+//INPUT OUTPUT INTERFACES
+public interface IInputVar<T>{
+	T inputVar { get; set;}
+}
+
+public interface IOutputVar<T>{
+	T outputVar { get; set;}
+}
+
+public interface IInputList<T>{
+	List <T> inputList { get; set;}
+}
+
+public interface IOutputList<T>{
+	List <T> outputList { get; set;}
+}
+
