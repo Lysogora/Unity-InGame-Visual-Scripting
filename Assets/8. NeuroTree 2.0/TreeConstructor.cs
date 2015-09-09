@@ -14,9 +14,9 @@ public class TreeConstructor : MonoBehaviour {
 	void Start () {
 		TestIdWeightClass ();
 	}
-
-	public void PassArgument(BaseNode from, BaseNode to, VarType vType){
-	switch (vType) {
+	//process output and input of vars and lists
+	public void PassArgument(BaseNode from, BaseNode to, VarType fromType, VarType outType){
+	switch (fromType) {
 		case VarType.FloatVar:
 			IOutputVar<float> fromInterface = from as IOutputVar<float>;
 			IInputVar<float> toInterface = to as IInputVar<float>;
@@ -32,6 +32,29 @@ public class TreeConstructor : MonoBehaviour {
 				toIdWeight.inputVar = fromIdWeight.outputVar; 
 			}
 			break;
+		
+		default:
+			break;
+		}
+	}
+
+	//process output and input lists of vars and lists
+	public void PassArgument(BaseNode from, BaseNode to, VarType fromType, VarType outType, int fromNum, int toNum){
+
+
+		switch (fromType) {
+		case VarType.IdWeightList:
+			IOutputVar<IdWeight> fromIdWeightList = from as IOutputVar<IdWeight>;
+			IInputVar<IdWeight> toIdWeightVar = to as IInputVar<IdWeight>;
+			IInputMultyList<IdWeight> toIdWeightList = to as IInputMultyList<IdWeight>;
+			IOutputList<IdWeight> fromIdWeightMultyList = to as IOutputList<IdWeight>;
+			if(fromIdWeightList != null && toIdWeightVar != null){
+				toIdWeightVar.inputVar = fromIdWeightList.outputVar; 
+			}
+			if(fromIdWeightMultyList != null && toIdWeightList != null){
+				toIdWeightList.inputLists[toNum] = fromIdWeightMultyList.outputList;
+			}
+		break;
 		default:
 			break;
 		}
@@ -46,7 +69,7 @@ public class TreeConstructor : MonoBehaviour {
 		node2 = new TestOutput_Node ();
 		node2.inFloat = 0;
 		
-		PassArgument (node1, node2, VarType.FloatVar);
+		PassArgument (node1, node2, VarType.FloatVar, VarType.FloatVar);
 		
 		Debug.Log ("fromNode " + node1.outFloat + " toNode " + node2.inFloat);
 		Debug.Log ("changing first var");
@@ -64,7 +87,7 @@ public class TreeConstructor : MonoBehaviour {
 		node2.inIdWeight = new IdWeight ();
 		node2.inIdWeight.weight = 0;
 		
-		PassArgument (node1, node2, VarType.IdWeightVar);
+		PassArgument (node1, node2, VarType.IdWeightVar, VarType.IdWeightVar);
 		
 		Debug.Log ("fromNode " + node1.outIdWeight.weight + " toNode " + node2.inIdWeight.weight);
 		Debug.Log ("changing first var");

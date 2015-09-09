@@ -52,6 +52,17 @@ public class BaseNode : IUniNode {
 		get {return _topNode;}
 		set {_topNode = value;}
 	}
+	public List<IUniNode> _outsideNodes = new List<IUniNode> ();
+	public List<IUniNode> outsideNodes {
+		get {return _outsideNodes;}
+		set {_outsideNodes = value;}
+	}
+	public List<IUniNode> _insideNodes = new List<IUniNode> ();
+	public List<IUniNode> insideNodes {
+		get {return _insideNodes;}
+		set {_insideNodes = value;}
+	}
+
 
 	public virtual void InitializeNode(){
 		

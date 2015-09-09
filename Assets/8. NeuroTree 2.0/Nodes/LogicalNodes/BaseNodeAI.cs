@@ -24,6 +24,7 @@ public class BaseNodeAI : MonoBehaviour {
 	public Node_DataMap attackMap;
 	public Node_DistanceFilter distanceFilter;
 	public Node_BestValue bestVal;
+	public Node_WeightBlend weightBlend; 
 
 	// Use this for initialization
 	void Start () {
@@ -33,7 +34,8 @@ public class BaseNodeAI : MonoBehaviour {
 	public void LaunchAI(){
 		//create test AI nodes
 //		TestNodeAI ();
-		InputTestNodeAI ();
+//		InputTestNodeAI ();
+		MultyListInputTestNodeAI ();
 		//Launch them
 		StartCoroutine (AICoroutine());
 	}
@@ -80,6 +82,24 @@ public class BaseNodeAI : MonoBehaviour {
 
 		lowerNodes.Add (distanceFilter);
 		lowerNodes.Add (bestVal);
+	}
+
+	void MultyListInputTestNodeAI(){
+		attackMap = new Node_DataMap ();
+		attackMap.topNode = this;
+		attackMap.InitializeNode ();
+		
+		distanceFilter = new Node_DistanceFilter ();
+		distanceFilter._inputVar = blackboard.subject;
+		distanceFilter._inputList = attackMap.dataMap;
+		distanceFilter.inputThreshold = 0.5f;
+
+		weightBlend = new Node_WeightBlend ();
+		weightBlend._inputLists.Add (attackMap.dataMap);
+		weightBlend._inputLists.Add (distanceFilter._outputList);
+				
+		lowerNodes.Add (distanceFilter);
+		lowerNodes.Add (weightBlend);
 	}
 
 	public IEnumerator AICoroutine(){
