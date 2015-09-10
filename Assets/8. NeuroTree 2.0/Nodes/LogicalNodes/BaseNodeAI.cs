@@ -27,6 +27,7 @@ public class BaseNodeAI : MonoBehaviour {
 	public Node_BestValue bestVal;
 	public Node_WeightBlend weightBlend; 
 	public Node_AddTarget addTargetNode;
+	public Node_OuterElementSelector outerElNode;
 
 	void Awake(){
 
@@ -51,7 +52,7 @@ public class BaseNodeAI : MonoBehaviour {
 		Node_AND andNode = new Node_AND ();
 		andNode.inputThreshold = 1.0f;
 
-		NotMyBody_Node nmbNode = new NotMyBody_Node ();
+		Node_OuterElementSelector nmbNode = new Node_OuterElementSelector ();
 		nmbNode.inputThreshold = 0.5f;
 
 		Node_DistanceFilter distNode = new Node_DistanceFilter ();
@@ -117,11 +118,18 @@ public class BaseNodeAI : MonoBehaviour {
 		attackMap = new Node_DataMap ();
 		attackMap.topNode = this;
 		attackMap.InitializeNode ();
+
+		outerElNode = new Node_OuterElementSelector ();
+		outerElNode._inputList = attackMap.dataMap;
+		outerElNode.topNode = this;
+		outerElNode.inputThreshold = 0.5f;
+		outerElNode.outputThreshold = 1.0f;
 		
 		distanceFilter = new Node_DistanceFilter ();
 		distanceFilter._inputVar = blackboard.subject;
-		distanceFilter._inputList = attackMap.dataMap;
+		distanceFilter._inputList = outerElNode._outputList;
 		distanceFilter.inputThreshold = 0.5f;
+		distanceFilter.outputThreshold = 0.5f;
 		
 		bestVal = new Node_BestValue ();
 		bestVal.topQuantity = 1;
@@ -130,7 +138,8 @@ public class BaseNodeAI : MonoBehaviour {
 		addTargetNode = new Node_AddTarget ();
 		addTargetNode.inputIds = bestVal._outputList;
 		addTargetNode.controlledElement = blackboard.subject;
-		
+
+		lowerNodes.Add (outerElNode);
 		lowerNodes.Add (distanceFilter);
 		lowerNodes.Add (bestVal);
 		lowerNodes.Add (addTargetNode);
@@ -149,13 +158,19 @@ public class BaseNodeAI : MonoBehaviour {
 
 			for (int i = 0; i < lowerNodes.Count; i++) {
 				lowerAnswer = lowerNodes[i].Run(blackboard);
-//				blackboard.Blend(lowerAnswer.blackboard, 1.0f);
 
-//				for (int p = 0; p < blackboard.baseElementsPriority.Length; p++) {
-//					Debug.Log("Pririty "+blackboard.baseElementsPriority[p]);
-//				}
 			}
-
+			// temporary call of movement function for the test
+			if(blackboard.subject.functionsDict.ContainsKey(FunctionType.Movement)){
+				List <BaseElement> bes = new List<BaseElement>();
+				for (int i = 0; i < bestVal._outputList.Count; i++) {
+					BaseElement trg = ElementsManager.inst.GetElement(bestVal._outputList[i].id);
+					if(trg != null){
+						bes.Add(trg);
+					}
+				}
+				blackboard.subject.functionsDict[FunctionType.Movement].Process(bes);
+			}
 
 			yield return new WaitForSeconds (refreshRate);
 		}

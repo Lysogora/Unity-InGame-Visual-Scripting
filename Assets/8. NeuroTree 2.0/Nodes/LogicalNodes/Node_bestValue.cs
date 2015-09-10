@@ -30,13 +30,12 @@ public class Node_BestValue : BaseNode, IInputList<IdWeight>, IInputVar<int>, IO
 	#endregion	
 	
 	public override NeuTreeCB Run (IBlackBoard _blackboard){
-		Debug.Log ("Getting best");
 		_outputList.Clear ();
 		int selected = -1;
-		float minVal = 100.0f;
+		float mavVal = -1.0f;
 		for (int i = 0; i < _inputList.Count; i++) {
-			if(_inputList[i].weight < minVal){
-				minVal = _inputList[i].weight;
+			if(_inputList[i].weight > mavVal){
+				mavVal = _inputList[i].weight;
 				selected = i;
 			}
 		}

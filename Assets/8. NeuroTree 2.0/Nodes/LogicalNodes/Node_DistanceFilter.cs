@@ -44,41 +44,31 @@ public class Node_DistanceFilter : BaseNode, IInputList<IdWeight>, IInputVar<Bas
 		if (upperNode != null)
 			thresholld = upperNode.inputThreshold;
 
-		//Debug.Log ("Checking distance of " + blackboard.functionStimuls[FunctionType.Movement].Keys.Count);
-		//List <int> el = new List<int> (blackboard.functionStimuls[FunctionType.Movement].Keys);
-
-		//List <IdWeight> el = new List<IdWeight> (_inputList);
-		//List <IdWeight> _outputList = new List<IdWeight> ();
 		_outputList.Clear ();
 		for (int i = 0; i < _inputList.Count; i++) {
 			_outputList.Add(new IdWeight());
 			_outputList[i].id = _inputList[i].id;
+			_outputList[i].weight = _inputList[i].weight;
 		}
 
 		for (int i = 0; i < _outputList.Count; i++) {
 			float dist  = Vector3.Magnitude(ElementsManager.gameElements[_outputList[i].id].transform.position - _inputVar.transform.position) / nomDist;
-
-			//Debug.Log("element id "+el[i].id+" didtance to element "+dist+" threshold value "+thresholld);
-
-			if(dist <= thresholld){
-				_outputList[i].weight = 1 - dist;
-				success = true;
+			if (_outputList[i].weight >= 0){
+				if(dist <= thresholld){
+					_outputList[i].weight += ((1 - dist) * outputThreshold);
+					success = true;
+				}
+				else if (outputThreshold == 1.0f){
+					_outputList[i].weight = -1.0f;
+				}
 			}
 		}
-
-		//_outputList = _outputList;
-
-//		for (int p = 0; p < blackboard.baseElementsPriority.Length; p++) {
-//			Debug.Log("Distance Pririty "+blackboard.baseElementsPriority[p]);
-//		}
-
 		if(!success){
 			answer.replyFire = ReplyFire.Fail;
 		}
 		else{
 			answer.replyFire = ReplyFire.Success;
 		}
-//		Debug.Log ("Diastance filter answer "+answer.replyFire);
 		return answer;
 	}
 }
