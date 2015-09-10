@@ -10,7 +10,7 @@ namespace NeuTree2 {
 		float inputThreshold { get; set;}
 		float outputThreshold { get; set;}
 		IBlackBoard blackboard { get; set;}
-		List <IUniNode> lowerNodes { get; set;}
+		List <BaseNode> lowerNodes { get; set;}
 		IUniNode upperNode {get; set;}
 		BaseNodeAI topNode { get; set;}
 		void InitializeNode();
@@ -81,6 +81,8 @@ public class FunctionPower{
 }
 
 public enum VarType {Any, IntVar, IntList, FloatVar, FloatList, IdWeightVar, IdWeightList, IdWeightMultyList, IntMultyVar};
+
+
 
 //INPUT OUTPUT INTERFACES
 public interface IInputVar<T>{

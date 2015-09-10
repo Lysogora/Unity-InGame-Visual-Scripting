@@ -37,8 +37,8 @@ public class BaseNode : IUniNode {
 		set {_blackboard = value;}
 	}
 
-	public List<IUniNode> _lowerNodes = new List<IUniNode> ();
-	public List<IUniNode> lowerNodes {
+	public List<BaseNode> _lowerNodes = new List<BaseNode> ();
+	public List<BaseNode> lowerNodes {
 		get {return _lowerNodes;}
 		set {_lowerNodes = value;}
 	}
@@ -52,8 +52,8 @@ public class BaseNode : IUniNode {
 		get {return _topNode;}
 		set {_topNode = value;}
 	}
-	public List<IUniNode> _outsideNodes = new List<IUniNode> ();
-	public List<IUniNode> outsideNodes {
+	public List<BaseNode> _outsideNodes = new List<BaseNode> ();
+	public List<BaseNode> outsideNodes {
 		get {return _outsideNodes;}
 		set {_outsideNodes = value;}
 	}
