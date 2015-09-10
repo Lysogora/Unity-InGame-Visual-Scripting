@@ -5,6 +5,7 @@ using NeuTree2;
 
 public class BaseNodeAI : MonoBehaviour {
 
+
 	public Blackboard _blackboard;
 	public Blackboard blackboard {
 		get {return _blackboard;}
@@ -25,6 +26,11 @@ public class BaseNodeAI : MonoBehaviour {
 	public Node_DistanceFilter distanceFilter;
 	public Node_BestValue bestVal;
 	public Node_WeightBlend weightBlend; 
+	public Node_AddTarget addTargetNode;
+
+	void Awake(){
+
+	}
 
 	// Use this for initialization
 	void Start () {
@@ -35,7 +41,8 @@ public class BaseNodeAI : MonoBehaviour {
 		//create test AI nodes
 //		TestNodeAI ();
 //		InputTestNodeAI ();
-		MultyListInputTestNodeAI ();
+//		MultyListInputTestNodeAI ();
+		SettingTargetTestNodeAI ();
 		//Launch them
 		StartCoroutine (AICoroutine());
 	}
@@ -95,11 +102,38 @@ public class BaseNodeAI : MonoBehaviour {
 		distanceFilter.inputThreshold = 0.5f;
 
 		weightBlend = new Node_WeightBlend ();
-		weightBlend._inputLists.Add (attackMap.dataMap);
-		weightBlend._inputLists.Add (distanceFilter._outputList);
+		weightBlend.InitializeNode ();
+//		weightBlend._inputLists.Add (attackMap.dataMap);
+//		weightBlend._inputLists.Add (distanceFilter._outputList);
+
+		TreeConstructor.inst.PassArgument (attackMap, weightBlend, VarType.IdWeightList, VarType.IdWeightMultyList, 0, 0);
+		TreeConstructor.inst.PassArgument (distanceFilter, weightBlend, VarType.IdWeightList, VarType.IdWeightMultyList, 0, 1);
 				
 		lowerNodes.Add (distanceFilter);
 		lowerNodes.Add (weightBlend);
+	}
+
+	void SettingTargetTestNodeAI(){
+		attackMap = new Node_DataMap ();
+		attackMap.topNode = this;
+		attackMap.InitializeNode ();
+		
+		distanceFilter = new Node_DistanceFilter ();
+		distanceFilter._inputVar = blackboard.subject;
+		distanceFilter._inputList = attackMap.dataMap;
+		distanceFilter.inputThreshold = 0.5f;
+		
+		bestVal = new Node_BestValue ();
+		bestVal.topQuantity = 1;
+		bestVal._inputList = distanceFilter._outputList;
+
+		addTargetNode = new Node_AddTarget ();
+		addTargetNode.inputIds = bestVal._outputList;
+		addTargetNode.controlledElement = blackboard.subject;
+		
+		lowerNodes.Add (distanceFilter);
+		lowerNodes.Add (bestVal);
+		lowerNodes.Add (addTargetNode);
 	}
 
 	public IEnumerator AICoroutine(){

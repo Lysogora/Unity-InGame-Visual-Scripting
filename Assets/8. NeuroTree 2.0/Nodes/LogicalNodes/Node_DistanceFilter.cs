@@ -36,12 +36,7 @@ public class Node_DistanceFilter : BaseNode, IInputList<IdWeight>, IInputVar<Bas
 
 	public override NeuTreeCB Run (IBlackBoard _blackboard)	{
 
-		blackboard = new Blackboard ();
-
 		NeuTreeCB answer = new NeuTreeCB();
-		//answer.blackboard = blackboard;
-		//blackboard.Project(_blackboard);
-		NeuTreeCB lowerAnswer = new NeuTreeCB ();
 
 		float nomDist = Mathf.ClosestPowerOfTwo(_inputVar.elProperties[PropertyType.Range].val);
 		bool success = false;

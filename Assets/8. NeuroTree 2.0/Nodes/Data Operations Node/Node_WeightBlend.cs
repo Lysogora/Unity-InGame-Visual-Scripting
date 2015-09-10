@@ -5,7 +5,7 @@ using System.Collections.Generic;
 [System.Serializable]
 public class Node_WeightBlend : BaseNode, IOutputList<IdWeight>, IInputMultyList<IdWeight> {
 	#region IOutputList implementation
-	public List<IdWeight> _outputList = new List<IdWeight> ();
+	public List<IdWeight> _outputList = new List<IdWeight> (2);
 	List<IdWeight> IOutputList<IdWeight>.outputList {
 		get {return _outputList;}
 		set {_outputList = value;}
@@ -15,14 +15,16 @@ public class Node_WeightBlend : BaseNode, IOutputList<IdWeight>, IInputMultyList
 	#region IInputMultylList implementation
 	public List<List<IdWeight>> _inputLists = new List<List<IdWeight>> ();
 	List<List<IdWeight>> IInputMultyList<IdWeight>.inputLists {
-		get {
-			throw new System.NotImplementedException ();
-		}
-		set {
-			throw new System.NotImplementedException ();
-		}
+		get {return _inputLists;}
+		set {_inputLists = value;}
 	}
 	#endregion
+	public override void InitializeNode(){
+		
+		_inputLists.Add (new List<IdWeight> ());
+		_inputLists.Add (new List<IdWeight> ());
+		
+	}
 
 	public override NeuTreeCB Run (IBlackBoard _blackboard)	{
 			

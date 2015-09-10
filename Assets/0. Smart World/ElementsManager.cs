@@ -65,6 +65,14 @@ public class ElementsManager : MonoBehaviour {
 		}
 		return nID;
 	}
+
+	public BaseElement GetElement(int id){
+		if (gameElements.ContainsKey (id)) {
+			return gameElements [id];
+		} else {
+			return null;
+		}
+	} 
 	
 	// Update is called once per frame
 	void Update () {

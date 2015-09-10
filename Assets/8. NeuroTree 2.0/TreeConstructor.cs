@@ -10,6 +10,11 @@ public class TreeConstructor : MonoBehaviour {
 	public TestOutput_Node node2;
 	public TestOutput_Node node1;
 
+	void Awake(){
+		if (inst == null)
+			inst = this;
+	}
+
 	// Use this for initialization
 	void Start () {
 		TestIdWeightClass ();
@@ -38,27 +43,59 @@ public class TreeConstructor : MonoBehaviour {
 		}
 	}
 
-	//process output and input lists of vars and lists
-	public void PassArgument(BaseNode from, BaseNode to, VarType fromType, VarType outType, int fromNum, int toNum){
+	//process output and input lists of vars and lists (List<T> and List<List<T>>)
+
+	// the function unboxes the interface of output variables in the output node(outNode) and the interface of input variables
+	// in the input node (inNode). OutType and inType indicate the type of the interface. OutNum and inNum indicates the place 
+	// of output and input T and List<T> in case of output or input variables interface is of kind List<T> or List<List<T>>
+	// respectively.
+
+	public void PassArgument(BaseNode outNode, BaseNode inNode, VarType outType, VarType inType, int outNum, int inNum){
 
 
-		switch (fromType) {
+		switch (outType) {
 		case VarType.IdWeightList:
-			IOutputVar<IdWeight> fromIdWeightList = from as IOutputVar<IdWeight>;
-			IInputVar<IdWeight> toIdWeightVar = to as IInputVar<IdWeight>;
-			IInputMultyList<IdWeight> toIdWeightList = to as IInputMultyList<IdWeight>;
-			IOutputList<IdWeight> fromIdWeightMultyList = to as IOutputList<IdWeight>;
-			if(fromIdWeightList != null && toIdWeightVar != null){
-				toIdWeightVar.inputVar = fromIdWeightList.outputVar; 
+			IOutputList<IdWeight> outIdWeightList = outNode as IOutputList<IdWeight>;
+
+			IInputList<IdWeight> inIdWeightList = inNode as IInputList<IdWeight>;
+			IInputMultyList<IdWeight> inIdWeightMultyList = inNode as IInputMultyList<IdWeight>;
+			// 1 list out - 1 list in
+			if(inType == VarType.IdWeightList){
+				if(outIdWeightList != null && inIdWeightList != null){
+					inIdWeightList.inputList = outIdWeightList.outputList; 
+				}
 			}
-			if(fromIdWeightMultyList != null && toIdWeightList != null){
-				toIdWeightList.inputLists[toNum] = fromIdWeightMultyList.outputList;
+			// 1 list out - n lists in 
+			if(inType == VarType.IdWeightMultyList){
+				if(outIdWeightList != null && inIdWeightMultyList != null){
+					inIdWeightMultyList.inputLists[inNum] = outIdWeightList.outputList;
+				}
 			}
 		break;
+		case VarType.IdWeightMultyList:
+			IOutputMultyList<IdWeight> outIdWeightMultyList = inNode as IOutputMultyList<IdWeight>;
+			
+			inIdWeightList = inNode as IInputList<IdWeight>;
+			inIdWeightMultyList = inNode as IInputMultyList<IdWeight>;
+			// n list out - 1 list in
+			if(inType == VarType.IdWeightList){
+				if(outIdWeightMultyList != null && inIdWeightList != null){
+					inIdWeightList.inputList = outIdWeightMultyList.outputLists[outNum]; 
+				}
+			}
+			// n list out - n lists in 
+			if(inType == VarType.IdWeightMultyList){
+				if(outIdWeightMultyList != null && inIdWeightMultyList != null){
+					inIdWeightMultyList.inputLists[inNum] = outIdWeightMultyList.outputLists[outNum];
+				}
+			}
+			break;
+
 		default:
 			break;
 		}
 	}
+
 
 	//TESTS
 	void TestFloatStruct(){

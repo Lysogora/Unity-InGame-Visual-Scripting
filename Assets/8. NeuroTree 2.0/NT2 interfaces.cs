@@ -80,7 +80,7 @@ public class FunctionPower{
 	}
 }
 
-public enum VarType {Any, IntVar, IntList, FloatVar, FloatList, IdWeightVar, IdWeightList, IntMultyVar};
+public enum VarType {Any, IntVar, IntList, FloatVar, FloatList, IdWeightVar, IdWeightList, IdWeightMultyList, IntMultyVar};
 
 //INPUT OUTPUT INTERFACES
 public interface IInputVar<T>{
@@ -101,5 +101,17 @@ public interface IOutputList<T>{
 
 public interface IInputMultyList<T>{
 	List <List<T>> inputLists { get; set;}
+}
+
+public interface IOutputMultyList<T>{
+	List <List<T>> outputLists { get; set;}
+}
+
+public interface IInputMultyVar<T>{
+	List <List<T>> inputVars { get; set;}
+}
+
+public interface IOutputMultyVar<T>{
+	List <List<T>> outputVars { get; set;}
 }
 
