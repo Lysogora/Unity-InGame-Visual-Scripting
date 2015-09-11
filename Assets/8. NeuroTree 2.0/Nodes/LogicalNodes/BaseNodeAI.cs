@@ -12,8 +12,8 @@ public class BaseNodeAI : MonoBehaviour {
 		set {_blackboard = value;}
 	}
 	
-	public List<IUniNode> _lowerNodes = new List<IUniNode> ();
-	public List<IUniNode> lowerNodes {
+	public List<BaseNode> _lowerNodes = new List<BaseNode> ();
+	public List<BaseNode> lowerNodes {
 		get {return _lowerNodes;}
 		set {_lowerNodes = value;}
 	}
@@ -21,6 +21,8 @@ public class BaseNodeAI : MonoBehaviour {
 	public BaseActivityElement controlledEl;
 
 	public float refreshRate;
+
+	public AIBlock aiBlock;
 
 	public Node_DataMap attackMap;
 	public Node_DistanceFilter distanceFilter;
@@ -40,10 +42,13 @@ public class BaseNodeAI : MonoBehaviour {
 
 	public void LaunchAI(){
 		//create test AI nodes
+		aiBlock = new AIBlock ();
 //		TestNodeAI ();
 //		InputTestNodeAI ();
-//		MultyListInputTestNodeAI ();
-		SettingTargetTestNodeAI ();
+		NestedListInputTestNodeAI ();
+//		SettingTargetTestNodeAI ();
+		//visualize test Ai for current purposes
+		VisualScriptEditor.inst.ShowAI (aiBlock);
 		//Launch them
 		StartCoroutine (AICoroutine());
 	}
@@ -92,26 +97,42 @@ public class BaseNodeAI : MonoBehaviour {
 		lowerNodes.Add (bestVal);
 	}
 
-	void MultyListInputTestNodeAI(){
+	void NestedListInputTestNodeAI(){
 		attackMap = new Node_DataMap ();
 		attackMap.topNode = this;
 		attackMap.InitializeNode ();
 		
 		distanceFilter = new Node_DistanceFilter ();
 		distanceFilter._inputVar = blackboard.subject;
-		distanceFilter._inputList = attackMap.dataMap;
+		distanceFilter._inputList = outerElNode._outputList;
 		distanceFilter.inputThreshold = 0.5f;
+		distanceFilter.outputThreshold = 0.5f;
+		distanceFilter.InitializeNode ();
 
 		weightBlend = new Node_WeightBlend ();
 		weightBlend.InitializeNode ();
 //		weightBlend._inputLists.Add (attackMap.dataMap);
 //		weightBlend._inputLists.Add (distanceFilter._outputList);
 
-		TreeConstructor.inst.PassArgument (attackMap, weightBlend, VarType.IdWeightList, VarType.IdWeightMultyList, 0, 0);
-		TreeConstructor.inst.PassArgument (distanceFilter, weightBlend, VarType.IdWeightList, VarType.IdWeightMultyList, 0, 1);
+//		TreeConstructor.inst.PassArgument (attackMap, weightBlend, VarType.IdWeightList, VarType.IdWeightNestedList, 0, 0);
+//		TreeConstructor.inst.PassArgument (distanceFilter, weightBlend, VarType.IdWeightList, VarType.IdWeightNestedList, 0, 1);
+
+		NodeConnection mapCon = attackMap.GetConnection (VarType.IdWeightList, DataDirection.OutcomeData, 0);
+		NodeConnection distCon = distanceFilter.GetConnection (VarType.IdWeightList, DataDirection.OutcomeData, 0);
+		NodeConnection blendCon1 = weightBlend.GetConnection (VarType.IdWeightNestedList, DataDirection.IncomeData, 0);
+		NodeConnection blendCon2 = weightBlend.GetConnection (VarType.IdWeightNestedList, DataDirection.IncomeData, 1);
+		if(mapCon == null) Debug.Log("1");
+		if(distCon == null) Debug.Log("2");
+		if(blendCon1 == null) Debug.Log("3");
+		if(blendCon2 == null) Debug.Log("4");
+		TreeConstructor.inst.BindConnections (mapCon, blendCon1, mapCon.varType, blendCon1.varType, mapCon.num, blendCon1.num);
+		TreeConstructor.inst.BindConnections (distCon, blendCon2, distCon.varType, blendCon2.varType, distCon.num, blendCon2.num);
 				
 		lowerNodes.Add (distanceFilter);
 		lowerNodes.Add (weightBlend);
+
+		aiBlock.coreNodes = lowerNodes;
+		aiBlock.dataNodes.Add (attackMap);
 	}
 
 	void SettingTargetTestNodeAI(){
@@ -143,6 +164,9 @@ public class BaseNodeAI : MonoBehaviour {
 		lowerNodes.Add (distanceFilter);
 		lowerNodes.Add (bestVal);
 		lowerNodes.Add (addTargetNode);
+
+		aiBlock.coreNodes = lowerNodes;
+		aiBlock.dataNodes.Add (attackMap);
 	}
 
 	public IEnumerator AICoroutine(){

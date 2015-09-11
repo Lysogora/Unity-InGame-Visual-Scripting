@@ -52,17 +52,19 @@ public class BaseNode : IUniNode {
 		get {return _topNode;}
 		set {_topNode = value;}
 	}
-	public List<BaseNode> _outsideNodes = new List<BaseNode> ();
-	public List<BaseNode> outsideNodes {
-		get {return _outsideNodes;}
-		set {_outsideNodes = value;}
+	public List<NodeConnection> _outConnections = new List<NodeConnection> ();
+	public List<NodeConnection> outConnections {
+		get {return _outConnections;}
+		set {_outConnections = value;}
 	}
-	public List<IUniNode> _insideNodes = new List<IUniNode> ();
-	public List<IUniNode> insideNodes {
-		get {return _insideNodes;}
-		set {_insideNodes = value;}
+	public List<NodeConnection> _inConnections = new List<NodeConnection> ();
+	public List<NodeConnection> inConnections {
+		get {return _inConnections;}
+		set {_inConnections = value;}
 	}
 
+	public Dictionary <VarType, NodeConnection> outConnectionByName = new Dictionary<VarType, NodeConnection> (); 
+	public Dictionary <VarType, NodeConnection> inConnectionByName = new Dictionary<VarType, NodeConnection> (); 
 
 	public virtual void InitializeNode(){
 		
@@ -72,6 +74,26 @@ public class BaseNode : IUniNode {
 		return null;
 	}
 	#endregion
+
+	public virtual NodeConnection GetConnection(VarType _varType, DataDirection _direction, int _n){
+		if (_direction == DataDirection.IncomeData) {
+			for (int i = 0; i < inConnections.Count; i++) {
+				if (inConnections [i].varType == _varType && inConnections [i].num == _n) {
+					return inConnections [i];
+				}
+			}
+			return null;
+		}
+		if (_direction == DataDirection.OutcomeData) {
+			for (int i = 0; i < outConnections.Count; i++) {
+				if (outConnections[i].varType == _varType && outConnections[i].num == _n){
+					return outConnections[i];
+				}
+			}
+			return null;
+		}
+		return null;
+	}
 
 
 

@@ -21,6 +21,19 @@ public class Node_AddTarget : BaseNode, IInputList<IdWeight>, IInputVar<BaseActi
 
 	#endregion
 
+	public override void InitializeNode(){
+
+		if (inConnections.Count < 1) {
+			NodeConnection connection = new NodeConnection ();
+			outConnections.Add (connection);
+			connection.InitializeConnection(this, DataDirection.IncomeData, VarType.IdWeightList, 0);
+			
+			NodeConnection connectionEl = new NodeConnection ();
+			outConnections.Add (connectionEl);
+			connectionEl.InitializeConnection(this, DataDirection.IncomeData, VarType.ActElementVar, 0);
+		}
+	}
+
 	public override NeuTreeCB Run (IBlackBoard _blackboard)	{
 		
 		NeuTreeCB answer = new NeuTreeCB ();

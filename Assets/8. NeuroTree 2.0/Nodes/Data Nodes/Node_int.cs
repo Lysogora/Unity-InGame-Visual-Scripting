@@ -12,13 +12,12 @@ public class Node_int : BaseNode, IOutputVar<int> {
 	}
 	#endregion
 	
-	// Use this for initialization
-	void Start () {
-		
-	}
-		
-	// Update is called once per frame
-	void Update () {
-		
+	public override void InitializeNode(){
+
+		if (outConnections.Count < 1) {
+			NodeConnection connection = new NodeConnection ();
+			outConnections.Add (connection);
+			connection.InitializeConnection(this, DataDirection.OutcomeData, VarType.IntVar, 0);
+		}
 	}
 }

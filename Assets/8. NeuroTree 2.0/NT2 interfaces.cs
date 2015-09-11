@@ -80,7 +80,12 @@ public class FunctionPower{
 	}
 }
 
-public enum VarType {Any, IntVar, IntList, FloatVar, FloatList, IdWeightVar, IdWeightList, IdWeightMultyList, IntMultyVar};
+public enum VarType {Any, IntVar, IntList, IntNestedList,
+	FloatVar, FloatList, FloatNestedList, 
+	IdWeightVar, IdWeightList, IdWeightNestedList, 
+	ElementVar, ElementList, ElementNestedList,
+	ActElementVar, ActElementList, ActElementNestedList
+};
 
 
 
@@ -103,10 +108,12 @@ public interface IOutputList<T>{
 
 public interface IInputMultyList<T>{
 	List <List<T>> inputLists { get; set;}
+	int AddList(List<T> list, int n);
 }
 
 public interface IOutputMultyList<T>{
 	List <List<T>> outputLists { get; set;}
+	int AddList(List<T> list, int n);
 }
 
 public interface IInputMultyVar<T>{

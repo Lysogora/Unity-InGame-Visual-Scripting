@@ -19,11 +19,37 @@ public class Node_WeightBlend : BaseNode, IOutputList<IdWeight>, IInputMultyList
 		set {_inputLists = value;}
 	}
 	#endregion
+
+	private int nestedListLimit = 2;
+
 	public override void InitializeNode(){
 		
 		_inputLists.Add (new List<IdWeight> ());
 		_inputLists.Add (new List<IdWeight> ());
+
+		if (outConnections.Count == 0) {
+			NodeConnection connection = new NodeConnection ();
+			outConnections.Add (connection);
+			connection.InitializeConnection(this, DataDirection.OutcomeData, VarType.IdWeightList, 0);
+		}
 		
+		if (inConnections.Count == 0) {
+			NodeConnection connection = new NodeConnection ();
+			inConnections.Add (connection);
+			connection.InitializeConnection(this, DataDirection.IncomeData, VarType.IdWeightNestedList, 0);
+			
+			NodeConnection connectionEl = new NodeConnection ();
+			inConnections.Add (connectionEl);
+			connectionEl.InitializeConnection(this, DataDirection.IncomeData, VarType.IdWeightNestedList, 1);
+		}		
+	}
+
+	int IInputMultyList<IdWeight>.AddList(List<IdWeight> list, int n){
+		if (n >= nestedListLimit)
+			return -1;
+		_inputLists [n].Clear ();
+		_inputLists [n] = list;
+		return n;
 	}
 
 	public override NeuTreeCB Run (IBlackBoard _blackboard)	{

@@ -30,7 +30,24 @@ public class Node_DistanceFilter : BaseNode, IInputList<IdWeight>, IInputVar<Bas
 	#endregion
 
 		
+	public override void InitializeNode(){
+		
+		if (outConnections.Count < 1) {
+			NodeConnection connection = new NodeConnection ();
+			outConnections.Add (connection);
+			connection.InitializeConnection(this, DataDirection.OutcomeData, VarType.IdWeightList, 0);
+		}
+		
+		if (inConnections.Count < 1) {
+			NodeConnection connection = new NodeConnection ();
+			inConnections.Add (connection);
+			connection.InitializeConnection(this, DataDirection.IncomeData, VarType.IdWeightList, 0);
 
+			NodeConnection connectionEl = new NodeConnection ();
+			inConnections.Add (connectionEl);
+			connectionEl.InitializeConnection(this, DataDirection.IncomeData, VarType.ElementVar, 0);
+		}
+	}
 
 
 

@@ -21,6 +21,21 @@ public class Node_OuterElementSelector : BaseNode, IInputList<IdWeight>, IOutput
 	}	
 	#endregion
 
+	public override void InitializeNode(){
+
+		if (outConnections.Count < 1) {
+			NodeConnection connection = new NodeConnection ();
+			outConnections.Add (connection);
+			connection.InitializeConnection(this, DataDirection.OutcomeData, VarType.IdWeightList, 0);
+		}
+
+		if (inConnections.Count < 1) {
+			NodeConnection connection = new NodeConnection ();
+			outConnections.Add (connection);
+			connection.InitializeConnection(this, DataDirection.IncomeData, VarType.IdWeightList, 0);
+		}
+	}
+
 	public override NeuTreeCB Run (IBlackBoard _blackboard)	{
 				
 		NeuTreeCB answer = new NeuTreeCB();

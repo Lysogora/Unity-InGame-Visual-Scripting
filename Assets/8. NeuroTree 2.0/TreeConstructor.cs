@@ -17,7 +17,7 @@ public class TreeConstructor : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		TestIdWeightClass ();
+		//TestIdWeightClass ();
 	}
 	//process output and input of vars and lists
 	public void PassArgument(BaseNode from, BaseNode to, VarType fromType, VarType outType){
@@ -66,13 +66,13 @@ public class TreeConstructor : MonoBehaviour {
 				}
 			}
 			// 1 list out - n lists in 
-			if(inType == VarType.IdWeightMultyList){
+			if(inType == VarType.IdWeightNestedList){
 				if(outIdWeightList != null && inIdWeightMultyList != null){
 					inIdWeightMultyList.inputLists[inNum] = outIdWeightList.outputList;
 				}
 			}
 		break;
-		case VarType.IdWeightMultyList:
+		case VarType.IdWeightNestedList:
 			IOutputMultyList<IdWeight> outIdWeightMultyList = inNode as IOutputMultyList<IdWeight>;
 			
 			inIdWeightList = inNode as IInputList<IdWeight>;
@@ -84,7 +84,7 @@ public class TreeConstructor : MonoBehaviour {
 				}
 			}
 			// n list out - n lists in 
-			if(inType == VarType.IdWeightMultyList){
+			if(inType == VarType.IdWeightNestedList){
 				if(outIdWeightMultyList != null && inIdWeightMultyList != null){
 					inIdWeightMultyList.inputLists[inNum] = outIdWeightMultyList.outputLists[outNum];
 				}
@@ -95,6 +95,38 @@ public class TreeConstructor : MonoBehaviour {
 			break;
 		}
 	}
+
+	public bool BindConnections(NodeConnection outNode, NodeConnection inNode, VarType outType, VarType inType, int outNum, int inNum){
+		if (outNode.varType == VarType.IdWeightList) {
+			IOutputList<IdWeight> outIdWeightList = outNode.node as IOutputList<IdWeight>;
+			if(outIdWeightList == null) return false;
+			if(inNode.varType == VarType.IdWeightVar){
+				return false;
+			}
+			else if (inNode.varType == VarType.IdWeightList){
+				IInputList<IdWeight> inIdWeightList = inNode as IInputList<IdWeight>;
+				if(inIdWeightList == null) return false;
+				inIdWeightList.inputList = outIdWeightList.outputList; 
+				if (outNode.oppositeConnections.Count == 0)
+					outNode.oppositeConnections.Add(inNode);
+				else{
+					outNode.oppositeConnections.Clear();
+					outNode.oppositeConnections.Add(inNode);
+				}
+				return true;
+			}
+			else if (inNode.varType == VarType.IdWeightNestedList){
+				IInputMultyList<IdWeight> inIdWeightMultyList = inNode as IInputMultyList<IdWeight>;
+				if(inIdWeightMultyList == null) return false;
+				inIdWeightMultyList.inputLists[inNum] = outIdWeightList.outputList;
+				return true;
+			}
+			return false;
+		}
+		return false;
+	}
+
+
 
 
 	//TESTS

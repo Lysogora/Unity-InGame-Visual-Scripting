@@ -12,19 +12,16 @@ public class Node_DataMap : BaseNode, IOutputList<IdWeight> {
 	}
 	#endregion
 
-	// Use this for initialization
-	void Start () {
-	
-	}
-
 	public override void InitializeNode(){
-
 		dataMap = topNode.blackboard.dataMaps[FunctionType.Vextraction];
+		if (outConnections.Count  == 0) {
+			NodeConnection connection = new NodeConnection ();
+			outConnections.Add (connection);
+			connection.node = this;
+			connection.dataDirection = DataDirection.OutcomeData;
+			connection.varType = VarType.IdWeightList;
+			connection.num = 0;
+		}
+	}
 
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
 }

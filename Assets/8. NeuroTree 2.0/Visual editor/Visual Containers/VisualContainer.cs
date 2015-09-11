@@ -11,6 +11,9 @@ public class VisualContainer : MonoBehaviour {
 	public BaseNode node;
 	public List <VisualElement> vElements = new List<VisualElement> ();
 
+	public Transform inputTrans;
+	public Transform outputTrans;
+
 	public Text title;
 	public Image typeImg;
 
