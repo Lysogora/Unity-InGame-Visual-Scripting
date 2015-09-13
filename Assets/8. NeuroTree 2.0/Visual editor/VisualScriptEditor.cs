@@ -8,6 +8,7 @@ public class VisualScriptEditor : MonoBehaviour {
 
 	public static VisualScriptEditor inst;
 
+	public Camera UIcam;
 	public Transform editorField;
 	public RectTransform editorRtrans;
 
@@ -17,6 +18,7 @@ public class VisualScriptEditor : MonoBehaviour {
 	public List <BaseNode> processedNodes;
 	public List <VisualContainer> nodeVisuals;
 	public Dictionary <BaseNode, VisualContainer> nodeVisualsDict = new Dictionary<BaseNode, VisualContainer> ();
+	public Dictionary <NodeConnection, VisualElement> elementsVisualsDict = new Dictionary<NodeConnection, VisualElement> ();
 
 
 	//prefabs
@@ -122,6 +124,9 @@ public class VisualScriptEditor : MonoBehaviour {
 		for (int i = 0; i < nodeVisuals.Count; i++) {
 			ShowNodeElements(nodeVisuals[i]);
 		}
+		for (int i = 0; i < nodeVisuals.Count; i++) {
+			ShowElementsConnections(nodeVisuals[i]);
+		}
 	}
 
 	void ShowNextTier(List <BaseNode> _nodes, List <NodeVisualData> _visuals){
@@ -157,25 +162,42 @@ public class VisualScriptEditor : MonoBehaviour {
 		for (int i = 0; i < _container.node.inConnections.Count; i++) {
 			GameObject element = Instantiate(varElementPrefab, Vector3.zero, Quaternion.identity) as GameObject;
 			element.transform.SetParent(_container.inputTrans);
+			RectTransform rTrans = element.GetComponent<RectTransform>();
+			rTrans.localScale = Vector3.one;
+			rTrans.anchoredPosition3D = new Vector3(rTrans.anchoredPosition3D.x, rTrans.anchoredPosition3D.y, 0);
+			VisualElement elVisual = element.GetComponent<VisualElement> ();
+			_container.vInElements.Add(elVisual);
+			elementsVisualsDict.Add(_container.node.inConnections[i], elVisual);
+
 		}
 
 		for (int i = 0; i < _container.node.outConnections.Count; i++) {
 			GameObject elementGO = Instantiate(varElementPrefab, Vector3.zero, Quaternion.identity) as GameObject;
+			RectTransform rTrans = elementGO.GetComponent<RectTransform>();
 			elementGO.transform.SetParent(_container.outputTrans);
+			rTrans.localScale = Vector3.one;
+			rTrans.anchoredPosition3D = new Vector3(rTrans.anchoredPosition3D.x, rTrans.anchoredPosition3D.y, 0);
 			VisualElement elVisual = elementGO.GetComponent<VisualElement> ();
-			_container.vElements.Add(elVisual);
+			_container.vOutElements.Add(elVisual);
+			elementsVisualsDict.Add(_container.node.outConnections[i], elVisual);
 		
+		}
+	}
+
+	void ShowElementsConnections(VisualContainer _container){
+		for (int i = 0; i < _container.vOutElements.Count; i++) {
+
 			List <NodeConnection> oppCons = _container.node.outConnections[i].oppositeConnections;
 			for (int con = 0; con < oppCons.Count; con++) {
 				GameObject lineGO = Instantiate(connectionPrefab, Vector3.zero, Quaternion.identity) as GameObject;
-				lineGO.transform.SetParent(elementGO.transform);
+				lineGO.transform.SetParent(_container.vOutElements[i].transform);
 				ConnectionUI conUI = lineGO.GetComponent<ConnectionUI>();
-				conUI.SetLinePoints(elementGO.transform, nodeVisualsDict[oppCons[con].node].transform);
-				elVisual.AddConnection(conUI);
+				conUI.nodeConnection = oppCons[con];
+				conUI.SetLinePoints(_container.vOutElements[i].transform, elementsVisualsDict[oppCons[con]].transform);
+				_container.vOutElements[i].AddConnection(conUI);
 			}
-
 		}
-	}
+     }			                                                      
 
 	void ShowInputNodeConnections(VisualContainer _container){
 	
