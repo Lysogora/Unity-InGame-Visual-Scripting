@@ -97,14 +97,17 @@ public class TreeConstructor : MonoBehaviour {
 	}
 
 	public bool BindConnections(NodeConnection outNode, NodeConnection inNode, VarType outType, VarType inType, int outNum, int inNum){
-		if (outNode.varType == VarType.IdWeightList) {
+		if (outType == VarType.IdWeightList) {
+			Debug.Log("Binding...");
 			IOutputList<IdWeight> outIdWeightList = outNode.node as IOutputList<IdWeight>;
 			if(outIdWeightList == null) return false;
+			Debug.Log("got output interface...");
 			if(inNode.varType == VarType.IdWeightVar){
 				return false;
 			}
-			else if (inNode.varType == VarType.IdWeightList){
-				IInputList<IdWeight> inIdWeightList = inNode as IInputList<IdWeight>;
+			if (inNode.varType == VarType.IdWeightList){
+				Debug.Log("got list node..." + inNode.node.GetType().ToString());
+				IInputList<IdWeight> inIdWeightList = inNode.node as IInputList<IdWeight>;
 				if(inIdWeightList == null) return false;
 				inIdWeightList.inputList = outIdWeightList.outputList; 
 				if (outNode.oppositeConnections.Count == 0)
@@ -115,10 +118,22 @@ public class TreeConstructor : MonoBehaviour {
 				}
 				return true;
 			}
-			else if (inNode.varType == VarType.IdWeightNestedList){
-				IInputMultyList<IdWeight> inIdWeightMultyList = inNode as IInputMultyList<IdWeight>;
+			if (inNode.varType == VarType.IdWeightNestedList){
+				Debug.Log("got nested list node..." + inNode.node.GetType().ToString());
+				IInputMultyList<IdWeight> inIdWeightMultyList = inNode.node as IInputMultyList<IdWeight>;
 				if(inIdWeightMultyList == null) return false;
+				Debug.Log("got input  Nested list  interface...");
 				inIdWeightMultyList.inputLists[inNum] = outIdWeightList.outputList;
+
+				if (outNode.oppositeConnections.Count == 0){
+					outNode.oppositeConnections.Add(inNode);
+					Debug.Log("Adding to empty new opposite connection");
+				}
+				else{
+					outNode.oppositeConnections.Clear();
+					outNode.oppositeConnections.Add(inNode);
+					Debug.Log("Replacing new opposite connection");
+				}
 				return true;
 			}
 			return false;

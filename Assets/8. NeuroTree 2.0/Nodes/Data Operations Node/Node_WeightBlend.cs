@@ -23,7 +23,7 @@ public class Node_WeightBlend : BaseNode, IOutputList<IdWeight>, IInputMultyList
 	private int nestedListLimit = 2;
 
 	public override void InitializeNode(){
-		
+
 		_inputLists.Add (new List<IdWeight> ());
 		_inputLists.Add (new List<IdWeight> ());
 

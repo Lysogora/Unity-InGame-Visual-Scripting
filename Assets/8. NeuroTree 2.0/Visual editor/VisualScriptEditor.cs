@@ -16,6 +16,7 @@ public class VisualScriptEditor : MonoBehaviour {
 	//processing Data
 	public List <BaseNode> processedNodes;
 	public List <VisualContainer> nodeVisuals;
+	public Dictionary <BaseNode, VisualContainer> nodeVisualsDict = new Dictionary<BaseNode, VisualContainer> ();
 
 
 	//prefabs
@@ -59,6 +60,7 @@ public class VisualScriptEditor : MonoBehaviour {
 			//connect to node
 			VisualContainer container = visualContainer.GetComponent<VisualContainer>();
 			nodeVisuals.Add (container);
+			nodeVisualsDict.Add(aiBlock.coreNodes[i], container);
 			container.node = aiBlock.coreNodes[i];
 			container.title.text = container.node.GetType().ToString();
 			//
@@ -71,6 +73,7 @@ public class VisualScriptEditor : MonoBehaviour {
 				xOffset += xStep;
 				yOffset -= yStep;
 			}
+
 			if (aiBlock.coreNodes[i].lowerNodes != null){
 				if (aiBlock.coreVisuals.Count > i && aiBlock.coreVisuals[i].lowerVisualData != null){
 					ShowNextTier(aiBlock.coreNodes[i].lowerNodes, aiBlock.coreVisuals[i].lowerVisualData);
@@ -79,6 +82,8 @@ public class VisualScriptEditor : MonoBehaviour {
 					ShowNextTier(aiBlock.coreNodes[i].lowerNodes, null);
 				}
 			}
+
+
 		}
 
 		// spawning blocks of additional data blocks that are not part of hierarchy
@@ -111,6 +116,11 @@ public class VisualScriptEditor : MonoBehaviour {
 					ShowNextTier(aiBlock.dataNodes[i].lowerNodes, null);
 				}
 			}
+		}
+
+		// show elemnts and connections
+		for (int i = 0; i < nodeVisuals.Count; i++) {
+			ShowNodeElements(nodeVisuals[i]);
 		}
 	}
 
@@ -150,8 +160,20 @@ public class VisualScriptEditor : MonoBehaviour {
 		}
 
 		for (int i = 0; i < _container.node.outConnections.Count; i++) {
-			GameObject element = Instantiate(varElementPrefab, Vector3.zero, Quaternion.identity) as GameObject;
-			element.transform.SetParent(_container.outputTrans);
+			GameObject elementGO = Instantiate(varElementPrefab, Vector3.zero, Quaternion.identity) as GameObject;
+			elementGO.transform.SetParent(_container.outputTrans);
+			VisualElement elVisual = elementGO.GetComponent<VisualElement> ();
+			_container.vElements.Add(elVisual);
+		
+			List <NodeConnection> oppCons = _container.node.outConnections[i].oppositeConnections;
+			for (int con = 0; con < oppCons.Count; con++) {
+				GameObject lineGO = Instantiate(connectionPrefab, Vector3.zero, Quaternion.identity) as GameObject;
+				lineGO.transform.SetParent(elementGO.transform);
+				ConnectionUI conUI = lineGO.GetComponent<ConnectionUI>();
+				conUI.SetLinePoints(elementGO.transform, nodeVisualsDict[oppCons[con].node].transform);
+				elVisual.AddConnection(conUI);
+			}
+
 		}
 	}
 
