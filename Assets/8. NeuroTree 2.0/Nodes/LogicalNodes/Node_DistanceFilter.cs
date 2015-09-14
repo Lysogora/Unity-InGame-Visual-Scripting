@@ -31,11 +31,14 @@ public class Node_DistanceFilter : BaseNode, IInputList<IdWeight>, IInputVar<Bas
 
 		
 	public override void InitializeNode(){
-		
+		nodeName = "DataMap";
+
+
 		if (outConnections.Count < 1) {
 			NodeConnection connection = new NodeConnection ();
 			outConnections.Add (connection);
 			connection.InitializeConnection(this, DataDirection.OutcomeData, VarType.IdWeightList, 0);
+			outConNames.Add(VarType.IdWeightList, new List<string> (){"El weights"});
 		}
 		
 		if (inConnections.Count < 1) {
@@ -46,6 +49,9 @@ public class Node_DistanceFilter : BaseNode, IInputList<IdWeight>, IInputVar<Bas
 			NodeConnection connectionEl = new NodeConnection ();
 			inConnections.Add (connectionEl);
 			connectionEl.InitializeConnection(this, DataDirection.IncomeData, VarType.ElementVar, 0);
+
+			inConNames.Add(VarType.IdWeightList, new List<string> (){"Other el weights"});
+			inConNames.Add(VarType.ElementVar, new List<string> (){"Center Element"});
 		}
 	}
 

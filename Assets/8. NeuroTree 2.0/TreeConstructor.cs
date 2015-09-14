@@ -127,11 +127,13 @@ public class TreeConstructor : MonoBehaviour {
 
 				if (outNode.oppositeConnections.Count == 0){
 					outNode.oppositeConnections.Add(inNode);
+					inNode.oppositeConnections.Add(outNode);
 					Debug.Log("Adding to empty new opposite connection");
 				}
 				else{
 					outNode.oppositeConnections.Clear();
 					outNode.oppositeConnections.Add(inNode);
+					inNode.oppositeConnections.Add(outNode);
 					Debug.Log("Replacing new opposite connection");
 				}
 				return true;

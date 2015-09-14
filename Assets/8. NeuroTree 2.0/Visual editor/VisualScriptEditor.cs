@@ -39,7 +39,7 @@ public class VisualScriptEditor : MonoBehaviour {
 	void Start () {
 	
 	}
-	public float xStep = 300.0f;
+	public float xStep = 400.0f;
 	public float yStep = 150.0f;
 	float xOffset = 0.0f;
 	float yOffset = 0.0f;
@@ -168,6 +168,7 @@ public class VisualScriptEditor : MonoBehaviour {
 			VisualElement elVisual = element.GetComponent<VisualElement> ();
 			_container.vInElements.Add(elVisual);
 			elementsVisualsDict.Add(_container.node.inConnections[i], elVisual);
+			elVisual.InitializeVisualElement(_container, _container.node.inConnections[i]);
 
 		}
 
@@ -180,24 +181,38 @@ public class VisualScriptEditor : MonoBehaviour {
 			VisualElement elVisual = elementGO.GetComponent<VisualElement> ();
 			_container.vOutElements.Add(elVisual);
 			elementsVisualsDict.Add(_container.node.outConnections[i], elVisual);
-		
+			elVisual.InitializeVisualElement(_container, _container.node.outConnections[i]);
 		}
 	}
 
 	void ShowElementsConnections(VisualContainer _container){
 		for (int i = 0; i < _container.vOutElements.Count; i++) {
-
 			List <NodeConnection> oppCons = _container.node.outConnections[i].oppositeConnections;
 			for (int con = 0; con < oppCons.Count; con++) {
 				GameObject lineGO = Instantiate(connectionPrefab, Vector3.zero, Quaternion.identity) as GameObject;
 				lineGO.transform.SetParent(_container.vOutElements[i].transform);
 				ConnectionUI conUI = lineGO.GetComponent<ConnectionUI>();
 				conUI.nodeConnection = oppCons[con];
-				conUI.SetLinePoints(_container.vOutElements[i].transform, elementsVisualsDict[oppCons[con]].transform);
+				conUI.InitializeConnectionUI(_container.vOutElements[i], elementsVisualsDict[oppCons[con]]);
 				_container.vOutElements[i].AddConnection(conUI);
 			}
 		}
-     }			                                                      
+     }	
+
+	//break connection between nodes' variables. Uses input variables as input var comes from one outputvar whille one
+	// output var can pass to multiply input vars
+	public void BreakConnection(NodeConnection _con){
+		if (_con.dataDirection == DataDirection.IncomeData) {
+			if(_con.oppositeConnections.Count > 0){
+				int index = _con.oppositeConnections[0].oppositeConnections.IndexOf(_con);
+				_con.oppositeConnections[0].oppositeConnections[index] = null;
+				GameObject go = elementsVisualsDict[_con.oppositeConnections[0]].conUIs[index].gameObject;
+				elementsVisualsDict[_con].conUIs.Clear();
+				_con.oppositeConnections[0] = null;
+				Destroy(go);
+			}
+		}
+	}
 
 	void ShowInputNodeConnections(VisualContainer _container){
 	

@@ -63,8 +63,12 @@ public class BaseNode : IUniNode {
 		set {_inConnections = value;}
 	}
 
-	public Dictionary <VarType, NodeConnection> outConnectionByName = new Dictionary<VarType, NodeConnection> (); 
-	public Dictionary <VarType, NodeConnection> inConnectionByName = new Dictionary<VarType, NodeConnection> (); 
+	public Dictionary <VarType, NodeConnection> outConnectionByVarType = new Dictionary<VarType, NodeConnection> (); 
+	public Dictionary <VarType, NodeConnection> inConnectionByVarType = new Dictionary<VarType, NodeConnection> (); 
+
+	public string nodeName;
+	public Dictionary <VarType, List<string>> outConNames = new Dictionary<VarType, List<string>> (); 
+	public Dictionary <VarType, List<string>> inConNames = new Dictionary<VarType, List<string>> (); 
 
 	public virtual void InitializeNode(){
 		

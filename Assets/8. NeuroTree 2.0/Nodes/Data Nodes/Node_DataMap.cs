@@ -15,12 +15,18 @@ public class Node_DataMap : BaseNode, IOutputList<IdWeight> {
 	public override void InitializeNode(){
 		dataMap = topNode.blackboard.dataMaps[FunctionType.Vextraction];
 		if (outConnections.Count  == 0) {
+			nodeName = "DataMap";
+			outConNames.Add(VarType.IdWeightList, new List<string> (){"El Weights"});
+
+
 			NodeConnection connection = new NodeConnection ();
 			outConnections.Add (connection);
 			connection.node = this;
 			connection.dataDirection = DataDirection.OutcomeData;
 			connection.varType = VarType.IdWeightList;
 			connection.num = 0;
+
+
 		}
 	}
 
