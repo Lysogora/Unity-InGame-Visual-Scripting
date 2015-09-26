@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -35,18 +35,18 @@ public class Node_DistanceFilter : BaseNode, IInputList<IdWeight>, IInputVar<Bas
 
 
 		if (outConnections.Count < 1) {
-			NodeConnection connection = new NodeConnection ();
+			VarPass connection = new VarPass ();
 			outConnections.Add (connection);
 			connection.InitializeConnection(this, DataDirection.OutcomeData, VarType.IdWeightList, 0);
 			outConNames.Add(VarType.IdWeightList, new List<string> (){"El weights"});
 		}
 		
 		if (inConnections.Count < 1) {
-			NodeConnection connection = new NodeConnection ();
+			VarPass connection = new VarPass ();
 			inConnections.Add (connection);
 			connection.InitializeConnection(this, DataDirection.IncomeData, VarType.IdWeightList, 0);
 
-			NodeConnection connectionEl = new NodeConnection ();
+			VarPass connectionEl = new VarPass ();
 			inConnections.Add (connectionEl);
 			connectionEl.InitializeConnection(this, DataDirection.IncomeData, VarType.ElementVar, 0);
 

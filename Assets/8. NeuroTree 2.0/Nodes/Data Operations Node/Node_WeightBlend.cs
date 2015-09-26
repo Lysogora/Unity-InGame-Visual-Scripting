@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 // blends two id weight lists
@@ -28,17 +28,17 @@ public class Node_WeightBlend : BaseNode, IOutputList<IdWeight>, IInputMultyList
 		_inputLists.Add (new List<IdWeight> ());
 
 		if (outConnections.Count == 0) {
-			NodeConnection connection = new NodeConnection ();
+			VarPass connection = new VarPass ();
 			outConnections.Add (connection);
 			connection.InitializeConnection(this, DataDirection.OutcomeData, VarType.IdWeightList, 0);
 		}
 		
 		if (inConnections.Count == 0) {
-			NodeConnection connection = new NodeConnection ();
+			VarPass connection = new VarPass ();
 			inConnections.Add (connection);
 			connection.InitializeConnection(this, DataDirection.IncomeData, VarType.IdWeightNestedList, 0);
 			
-			NodeConnection connectionEl = new NodeConnection ();
+			VarPass connectionEl = new VarPass ();
 			inConnections.Add (connectionEl);
 			connectionEl.InitializeConnection(this, DataDirection.IncomeData, VarType.IdWeightNestedList, 1);
 		}		

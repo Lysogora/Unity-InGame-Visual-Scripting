@@ -1,15 +1,15 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-public class ConnectionUI : MonoBehaviour {
+public class VarPassUI : MonoBehaviour {
 
 	public VisualElement visElement;
 	public VisualElement otherVisElement;
 
 
-	public NodeConnection nodeConnection;
-	public ConnectionUI otherConnectionUI;
+	public VarPass varPass;
+	public VarPassUI otherVarPassUI;
 	public int linePointsNum;
 	public List <Vector3> points = new List <Vector3> ();
 
@@ -25,7 +25,7 @@ public class ConnectionUI : MonoBehaviour {
 	public void InitializeConnectionUI(VisualElement _visElement, VisualElement _otherVisElement){
 		visElement = _visElement;
 		otherVisElement = _otherVisElement;
-		nodeConnection = visElement.nodeConnection;
+		varPass = visElement.varPass;
 
 		beginTrans = visElement.transform;
 		endTrans = otherVisElement.transform;

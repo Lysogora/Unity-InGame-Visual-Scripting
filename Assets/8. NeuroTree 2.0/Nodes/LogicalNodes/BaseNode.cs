@@ -42,8 +42,8 @@ public class BaseNode : IUniNode {
 		get {return _lowerNodes;}
 		set {_lowerNodes = value;}
 	}
-	public IUniNode _upperNode;
-	public IUniNode upperNode {
+	public BaseNode _upperNode;
+	public BaseNode upperNode {
 		get {return _upperNode;}
 		set {_upperNode = value;}
 	}
@@ -52,19 +52,19 @@ public class BaseNode : IUniNode {
 		get {return _topNode;}
 		set {_topNode = value;}
 	}
-	public List<NodeConnection> _outConnections = new List<NodeConnection> ();
-	public List<NodeConnection> outConnections {
+	public List<VarPass> _outConnections = new List<VarPass> ();
+	public List<VarPass> outConnections {
 		get {return _outConnections;}
 		set {_outConnections = value;}
 	}
-	public List<NodeConnection> _inConnections = new List<NodeConnection> ();
-	public List<NodeConnection> inConnections {
+	public List<VarPass> _inConnections = new List<VarPass> ();
+	public List<VarPass> inConnections {
 		get {return _inConnections;}
 		set {_inConnections = value;}
 	}
 
-	public Dictionary <VarType, NodeConnection> outConnectionByVarType = new Dictionary<VarType, NodeConnection> (); 
-	public Dictionary <VarType, NodeConnection> inConnectionByVarType = new Dictionary<VarType, NodeConnection> (); 
+	public Dictionary <VarType, VarPass> outConnectionByVarType = new Dictionary<VarType, VarPass> (); 
+	public Dictionary <VarType, VarPass> inConnectionByVarType = new Dictionary<VarType, VarPass> (); 
 
 	public string nodeName;
 	public Dictionary <VarType, List<string>> outConNames = new Dictionary<VarType, List<string>> (); 
@@ -79,7 +79,7 @@ public class BaseNode : IUniNode {
 	}
 	#endregion
 
-	public virtual NodeConnection GetConnection(VarType _varType, DataDirection _direction, int _n){
+	public virtual VarPass GetConnection(VarType _varType, DataDirection _direction, int _n){
 		if (_direction == DataDirection.IncomeData) {
 			for (int i = 0; i < inConnections.Count; i++) {
 				if (inConnections [i].varType == _varType && inConnections [i].num == _n) {

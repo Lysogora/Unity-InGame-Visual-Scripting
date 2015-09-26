@@ -16,10 +16,10 @@ public class Node_DataMap : BaseNode, IOutputList<IdWeight> {
 		dataMap = topNode.blackboard.dataMaps[FunctionType.Vextraction];
 		if (outConnections.Count  == 0) {
 			nodeName = "DataMap";
-			outConNames.Add(VarType.IdWeightList, new List<string> (){"El Weights"});
+			outConNames.Add(VarType.IdWeightList, new List<string> (){"Element Weights"});
 
 
-			NodeConnection connection = new NodeConnection ();
+			VarPass connection = new VarPass ();
 			outConnections.Add (connection);
 			connection.node = this;
 			connection.dataDirection = DataDirection.OutcomeData;

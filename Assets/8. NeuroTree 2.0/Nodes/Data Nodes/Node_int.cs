@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -15,7 +15,7 @@ public class Node_int : BaseNode, IOutputVar<int> {
 	public override void InitializeNode(){
 
 		if (outConnections.Count < 1) {
-			NodeConnection connection = new NodeConnection ();
+			VarPass connection = new VarPass ();
 			outConnections.Add (connection);
 			connection.InitializeConnection(this, DataDirection.OutcomeData, VarType.IntVar, 0);
 		}

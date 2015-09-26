@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using System.Collections;
@@ -18,7 +18,7 @@ public class VisualScriptEditor : MonoBehaviour {
 	public List <BaseNode> processedNodes;
 	public List <VisualContainer> nodeVisuals;
 	public Dictionary <BaseNode, VisualContainer> nodeVisualsDict = new Dictionary<BaseNode, VisualContainer> ();
-	public Dictionary <NodeConnection, VisualElement> elementsVisualsDict = new Dictionary<NodeConnection, VisualElement> ();
+	public Dictionary <VarPass, VisualElement> elementsVisualsDict = new Dictionary<VarPass, VisualElement> ();
 
 
 	//prefabs
@@ -186,13 +186,14 @@ public class VisualScriptEditor : MonoBehaviour {
 	}
 
 	void ShowElementsConnections(VisualContainer _container){
+		Debug.Log ("Processing container "+_container.node.nodeName);
 		for (int i = 0; i < _container.vOutElements.Count; i++) {
-			List <NodeConnection> oppCons = _container.node.outConnections[i].oppositeConnections;
+			List <VarPass> oppCons = _container.node.outConnections[i].oppositeConnections;
 			for (int con = 0; con < oppCons.Count; con++) {
 				GameObject lineGO = Instantiate(connectionPrefab, Vector3.zero, Quaternion.identity) as GameObject;
 				lineGO.transform.SetParent(_container.vOutElements[i].transform);
-				ConnectionUI conUI = lineGO.GetComponent<ConnectionUI>();
-				conUI.nodeConnection = oppCons[con];
+				VarPassUI conUI = lineGO.GetComponent<VarPassUI>();
+				conUI.varPass = oppCons[con];
 				conUI.InitializeConnectionUI(_container.vOutElements[i], elementsVisualsDict[oppCons[con]]);
 				_container.vOutElements[i].AddConnection(conUI);
 			}
@@ -201,7 +202,7 @@ public class VisualScriptEditor : MonoBehaviour {
 
 	//break connection between nodes' variables. Uses input variables as input var comes from one outputvar whille one
 	// output var can pass to multiply input vars
-	public void BreakConnection(NodeConnection _con){
+	public void BreakConnection(VarPass _con){
 		if (_con.dataDirection == DataDirection.IncomeData) {
 			if(_con.oppositeConnections.Count > 0){
 				int index = _con.oppositeConnections[0].oppositeConnections.IndexOf(_con);
@@ -216,6 +217,11 @@ public class VisualScriptEditor : MonoBehaviour {
 
 	void ShowInputNodeConnections(VisualContainer _container){
 	
+	}
+
+	void SaveAIBlockVisualData(){
+		aiBlock.coreVisuals.Clear ();
+		aiBlock.dataNodesVisuals.Clear ();
 	}
 
 	// scaling of the field with containers

@@ -117,14 +117,16 @@ public class BaseNodeAI : MonoBehaviour {
 //		TreeConstructor.inst.PassArgument (attackMap, weightBlend, VarType.IdWeightList, VarType.IdWeightNestedList, 0, 0);
 //		TreeConstructor.inst.PassArgument (distanceFilter, weightBlend, VarType.IdWeightList, VarType.IdWeightNestedList, 0, 1);
 
-		NodeConnection mapCon = attackMap.GetConnection (VarType.IdWeightList, DataDirection.OutcomeData, 0);
-		NodeConnection distCon = distanceFilter.GetConnection (VarType.IdWeightList, DataDirection.OutcomeData, 0);
-		NodeConnection blendCon1 = weightBlend.GetConnection (VarType.IdWeightNestedList, DataDirection.IncomeData, 0);
-		NodeConnection blendCon2 = weightBlend.GetConnection (VarType.IdWeightNestedList, DataDirection.IncomeData, 1);
+		VarPass mapCon = attackMap.GetConnection (VarType.IdWeightList, DataDirection.OutcomeData, 0);
+		VarPass distCon = distanceFilter.GetConnection (VarType.IdWeightList, DataDirection.OutcomeData, 0);
+		VarPass blendCon1 = weightBlend.GetConnection (VarType.IdWeightNestedList, DataDirection.IncomeData, 0);
+		VarPass blendCon2 = weightBlend.GetConnection (VarType.IdWeightNestedList, DataDirection.IncomeData, 1);
+
 		if(mapCon == null) Debug.Log("1");
 		if(distCon == null) Debug.Log("2");
 		if(blendCon1 == null) Debug.Log("3");
 		if(blendCon2 == null) Debug.Log("4");
+
 		TreeConstructor.inst.BindConnections (mapCon, blendCon1, mapCon.varType, blendCon1.varType, mapCon.num, blendCon1.num);
 		TreeConstructor.inst.BindConnections (distCon, blendCon2, distCon.varType, blendCon2.varType, distCon.num, blendCon2.num);
 				

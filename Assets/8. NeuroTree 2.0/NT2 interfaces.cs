@@ -11,7 +11,7 @@ namespace NeuTree2 {
 		float outputThreshold { get; set;}
 		IBlackBoard blackboard { get; set;}
 		List <BaseNode> lowerNodes { get; set;}
-		IUniNode upperNode {get; set;}
+		BaseNode upperNode {get; set;}
 		BaseNodeAI topNode { get; set;}
 		void InitializeNode();
 		NeuTreeCB Run(IBlackBoard _blackboard);

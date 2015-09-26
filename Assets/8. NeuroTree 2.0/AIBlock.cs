@@ -16,6 +16,13 @@ public class AIBlock {
 	void Start () {
 	
 	}
+
+	public void SaveVisualData(){
+		coreVisuals.Clear();
+		dataNodesVisuals.Clear ();
+
+
+	} 
 	
 	// Update is called once per frame
 	void Update () {

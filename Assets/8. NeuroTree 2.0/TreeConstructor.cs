@@ -96,7 +96,7 @@ public class TreeConstructor : MonoBehaviour {
 		}
 	}
 
-	public bool BindConnections(NodeConnection outNode, NodeConnection inNode, VarType outType, VarType inType, int outNum, int inNum){
+	public bool BindConnections(VarPass outNode, VarPass inNode, VarType outType, VarType inType, int outNum, int inNum){
 		if (outType == VarType.IdWeightList) {
 			Debug.Log("Binding...");
 			IOutputList<IdWeight> outIdWeightList = outNode.node as IOutputList<IdWeight>;

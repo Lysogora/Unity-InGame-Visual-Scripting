@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -24,11 +24,11 @@ public class Node_AddTarget : BaseNode, IInputList<IdWeight>, IInputVar<BaseActi
 	public override void InitializeNode(){
 
 		if (inConnections.Count < 1) {
-			NodeConnection connection = new NodeConnection ();
+			VarPass connection = new VarPass ();
 			outConnections.Add (connection);
 			connection.InitializeConnection(this, DataDirection.IncomeData, VarType.IdWeightList, 0);
 			
-			NodeConnection connectionEl = new NodeConnection ();
+			VarPass connectionEl = new VarPass ();
 			outConnections.Add (connectionEl);
 			connectionEl.InitializeConnection(this, DataDirection.IncomeData, VarType.ActElementVar, 0);
 		}

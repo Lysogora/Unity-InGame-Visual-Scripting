@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
 using UnityEngine.EventSystems;
@@ -7,8 +7,8 @@ using System.Collections.Generic;
 [System.Serializable]
 public class VisualElement : MonoBehaviour, IPointerDownHandler {
 	public VisualContainer vContainer;
-	public NodeConnection nodeConnection;
-	public List <ConnectionUI> conUIs = new List<ConnectionUI> ();
+	public VarPass varPass;
+	public List <VarPassUI> conUIs = new List<VarPassUI> ();
 	public Text elName;
 	public Image elImg;
 
@@ -17,37 +17,37 @@ public class VisualElement : MonoBehaviour, IPointerDownHandler {
 	
 	}
 
-	public void InitializeVisualElement(VisualContainer _vContainer, NodeConnection _nodeConnection){
+	public void InitializeVisualElement(VisualContainer _vContainer, VarPass _nodeConnection){
 		vContainer = _vContainer;
-		nodeConnection = _nodeConnection;
+		varPass = _nodeConnection;
 
 		//Get Names for our variables
-		if (nodeConnection.dataDirection == DataDirection.OutcomeData) {
+		if (varPass.dataDirection == DataDirection.OutcomeData) {
 			//adjust name position
 
-			if(vContainer.node.outConNames.ContainsKey(nodeConnection.varType)){
-				if(vContainer.node.outConNames[nodeConnection.varType].Count > nodeConnection.num){
-					elName.text = vContainer.node.outConNames[nodeConnection.varType][nodeConnection.num];
+			if(vContainer.node.outConNames.ContainsKey(varPass.varType)){
+				if(vContainer.node.outConNames[varPass.varType].Count > varPass.num){
+					elName.text = vContainer.node.outConNames[varPass.varType][varPass.num];
 				}
 			}
 
 		}
 
-		if (nodeConnection.dataDirection == DataDirection.IncomeData) {
+		if (varPass.dataDirection == DataDirection.IncomeData) {
 			//adjust name position
 			elName.alignment = TextAnchor.MiddleLeft;
 			elName.rectTransform.anchoredPosition = new Vector2(elName.rectTransform.anchoredPosition.x * -1, elName.rectTransform.anchoredPosition.y);
 			
-			if(vContainer.node.inConNames.ContainsKey(nodeConnection.varType)){
-				if(vContainer.node.inConNames[nodeConnection.varType].Count > nodeConnection.num){
-					elName.text = vContainer.node.inConNames[nodeConnection.varType][nodeConnection.num];
+			if(vContainer.node.inConNames.ContainsKey(varPass.varType)){
+				if(vContainer.node.inConNames[varPass.varType].Count > varPass.num){
+					elName.text = vContainer.node.inConNames[varPass.varType][varPass.num];
 				}
 			}
 			
 		}
 	}
 
-	public void AddConnection(ConnectionUI conUI){
+	public void AddConnection(VarPassUI conUI){
 		if (!conUIs.Contains (conUI)) {
 			conUIs.Add(conUI);
 		}
@@ -65,7 +65,7 @@ public class VisualElement : MonoBehaviour, IPointerDownHandler {
 		Debug.Log ("Pointer click");
 		if (Input.GetMouseButtonDown (1)) {
 			Debug.Log ("delete command");
-			VisualScriptEditor.inst.BreakConnection(nodeConnection);
+			VisualScriptEditor.inst.BreakConnection(varPass);
 		}
 	}
 	
